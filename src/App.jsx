@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Checkout from "./pages/Checkout";
-import PaymentMethod from "./pages/PaymentMethod";
+import PaymentMethod from "./pages/Paymentmethod";
 
 export default function App() {
   return (
