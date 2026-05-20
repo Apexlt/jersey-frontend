@@ -1,0 +1,264 @@
+/* 🚫 GLOBAL FIX (IMPORTANT) */
+* {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden; /* 🔥 removes scrollbar properly */
+}
+
+/* PAGE */
+.page {
+  font-family: Arial;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+
+  color: white;
+  background: radial-gradient(circle at top, rgba(255, 215, 0, 0.18), #0b0b0f 45%);
+}
+
+/* 🔥 HEADER */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 15px 20px;
+
+  background: #0b2a5b;
+}
+
+/* LEFT SIDE */
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* VERTICAL LINE */
+.divider {
+  width: 3px;
+  height: 40px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 2px;
+}
+
+/* LOGO */
+.logo {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+}
+
+/* MENU ICON */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.menu span {
+  width: 25px;
+  height: 3px;
+  background: #FFD700;
+  border-radius: 2px;
+}
+
+.menu span:nth-child(2) { width: 18px; }
+.menu span:nth-child(3) { width: 12px; }
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 70px 20px;
+  background: linear-gradient(135deg, rgba(255,215,0,0.15), #111, #0b0b0f);
+  border-bottom: 1px solid rgba(255,215,0,0.25);
+}
+
+.title {
+  font-size: clamp(28px, 5vw, 44px);
+  color: #FFD700;
+  text-shadow: 0 0 25px rgba(255,215,0,0.5);
+}
+
+.subtitle {
+  opacity: 0.75;
+}
+
+/* SLIDER (FIXED OVERFLOW) */
+.sliderWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+  padding: 40px 10px;
+
+  width: 100%;
+  overflow: hidden; /* 🔥 critical fix */
+}
+
+/* NAV BUTTONS */
+.navBtn {
+  flex-shrink: 0; /* 🔥 prevents pushing layout */
+  padding: 10px 12px;
+  font-size: 18px;
+
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+
+  background: #1a1a1a;
+  color: #FFD700;
+
+  box-shadow: 0 0 12px rgba(255,215,0,0.25);
+}
+
+.navBtn:hover {
+  transform: scale(1.05);
+}
+
+/* CARD (FIXED OVERFLOW SOURCE) */
+.card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+
+  width: 100%;
+  max-width: 340px;
+
+  flex-shrink: 1; /* 🔥 prevents overflow */
+
+  border: 1px solid rgba(255,215,0,0.3);
+  box-shadow: 0 15px 50px rgba(255, 215, 0, 0.12);
+}
+
+/* IMAGE */
+.image {
+  width: 100%;
+  height: 450px;
+  object-fit: contain;
+  background: #000;
+}
+
+/* OVERLAY */
+.overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 22px;
+
+  background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
+}
+
+.price {
+  color: #FFD700;
+  font-weight: bold;
+}
+
+/* SIZES */
+.sizeContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.sizeButton {
+  padding: 7px 11px;
+  border: 1px solid #FFD700;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* BUTTON */
+.button {
+  margin-top: 12px;
+  padding: 13px;
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+
+  background: linear-gradient(135deg, #FFD700, #ffcc00);
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 35px;
+  font-size: 12px;
+  opacity: 0.6;
+
+  width: 100%;
+}
+
+/* SOCIAL ICONS */
+.socials {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap; /* 🔥 prevents overflow */
+}
+
+.socials a {
+  font-size: 22px;
+  color: #FFD700;
+  transition: 0.2s;
+}
+
+.socials a:hover {
+  transform: scale(1.2);
+  color: white;
+}
+
+/* 📱 TABLET */
+@media (max-width: 900px) {
+  .sliderWrapper {
+    flex-direction: row;
+    padding: 30px 10px;
+  }
+
+  .image {
+    height: 380px;
+  }
+}
+
+/* 📱 SMALL PHONES */
+@media (max-width: 500px) {
+
+  .hero {
+    padding: 50px 15px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .sliderWrapper {
+    gap: 6px;
+  }
+
+  .image {
+    height: 320px;
+  }
+
+  .navBtn {
+    padding: 8px 10px;
+    font-size: 16px;
+  }
+}
+

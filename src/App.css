@@ -1,0 +1,19 @@
+/* 🚫 HIDE HORIZONTAL SCROLL */
+html, body, #root {
+  overflow-x: hidden !important;
+}
+
+/* 🚫 HIDE SCROLLBAR (CHROME, EDGE, SAFARI) */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* 🚫 HIDE SCROLLBAR (FIREFOX) */
+body {
+  scrollbar-width: none;
+}
+
+/* 🚫 HIDE SCROLLBAR (IE & OLD EDGE) */
+body {
+  -ms-overflow-style: none;
+}
