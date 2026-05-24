@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import "./Checkout.css";
 import { API_BASE } from "../config";
 
@@ -9,6 +9,11 @@ export default function Checkout() {
 
   const product = state?.product;
   const size = state?.size;
+
+  const totalUsd = useMemo(
+    () => (product ? product.price + 10 : 0),
+    [product]
+  );
 
   const [btcRate, setBtcRate] = useState(null);
   const [ethRate, setEthRate] = useState(null);
@@ -22,21 +27,22 @@ export default function Checkout() {
   });
 
   useEffect(() => {
-    async function getRates() {
-      try {
-        const res = await fetch(
-          "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd"
-        );
-        const data = await res.json();
+    let ignore = false;
 
+    fetch(
+      "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd"
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (ignore) return;
         setBtcRate(data.bitcoin.usd);
         setEthRate(data.ethereum.usd);
-      } catch (err) {
-        console.log("RATE ERROR:", err);
-      }
-    }
+      })
+      .catch(() => {});
 
-    getRates();
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   if (!product || !size) {
@@ -48,53 +54,48 @@ export default function Checkout() {
     );
   }
 
-  const handleContinue = async () => {
+  const handleContinue = () => {
     const { email, phone, address, city, country } = form;
 
     if (!email || !phone || !address || !city || !country) {
-      return alert("Please fill all details including phone number");
+      return alert("Please fill all fields");
     }
 
-    try {
-      const res = await fetch(`${API_BASE}/api/payment/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          product,
-          size,
-          customer: form,
-          totalUsd: product.price + 10,
-          paymentMethod: "USDC",
-        }),
+    // ⚡ INSTANT NAVIGATION (NO WAIT)
+    navigate("/payment", {
+      state: {
+        product,
+        size,
+        customer: form,
+        btcRate,
+        ethRate,
+        totalUsd,
+        lockedAt: Date.now(),
+        orderId: null,
+      },
+    });
+
+    // ⚡ BACKGROUND API CALL (DOES NOT BLOCK UI)
+    fetch(`${API_BASE}/api/payment/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        product,
+        size,
+        customer: form,
+        totalUsd,
+        paymentMethod: "USDC",
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("ORDER CREATED:", data);
+      })
+      .catch((err) => {
+        console.error("BACKGROUND ORDER ERROR:", err);
       });
-
-      const data = await res.json();
-
-      console.log("ORDER RESPONSE:", data);
-
-      if (!data.success) {
-        return alert("Failed to create order");
-      }
-
-      navigate("/payment", {
-        state: {
-          product,
-          size,
-          customer: form,
-          btcRate,
-          ethRate,
-          totalUsd: product.price + 10,
-          lockedAt: Date.now(),
-          orderId: data.orderId,
-        },
-      });
-
-    } catch (err) {
-      console.error("ORDER ERROR:", err);
-      alert("Server error while creating order");
-    }
   };
 
   return (
@@ -104,24 +105,39 @@ export default function Checkout() {
         <h2>Checkout</h2>
         <p className="sub">Secure Crypto Payment</p>
 
-        <input placeholder="Email"
-          onChange={(e)=>setForm({...form,email:e.target.value})}
+        <input
+          placeholder="Email"
+          onChange={(e) =>
+            setForm({ ...form, email: e.target.value })
+          }
         />
 
-        <input placeholder="Phone Number"
-          onChange={(e)=>setForm({...form,phone:e.target.value})}
+        <input
+          placeholder="Phone Number"
+          onChange={(e) =>
+            setForm({ ...form, phone: e.target.value })
+          }
         />
 
-        <input placeholder="Address"
-          onChange={(e)=>setForm({...form,address:e.target.value})}
+        <input
+          placeholder="Address"
+          onChange={(e) =>
+            setForm({ ...form, address: e.target.value })
+          }
         />
 
-        <input placeholder="City"
-          onChange={(e)=>setForm({...form,city:e.target.value})}
+        <input
+          placeholder="City"
+          onChange={(e) =>
+            setForm({ ...form, city: e.target.value })
+          }
         />
 
-        <input placeholder="Country"
-          onChange={(e)=>setForm({...form,country:e.target.value})}
+        <input
+          placeholder="Country"
+          onChange={(e) =>
+            setForm({ ...form, country: e.target.value })
+          }
         />
 
         <div className="btcBox">
@@ -141,7 +157,8 @@ export default function Checkout() {
         <h3>Order Summary</h3>
 
         <div className="summaryCard">
-          <img src={product.image} />
+          <img src={product.image} alt="product" />
+
           <div>
             <p>{product.name || "Product"}</p>
             <p>Size: {size}</p>
@@ -156,7 +173,7 @@ export default function Checkout() {
           <p>Delivery</p>
           <p>$10</p>
 
-          <h2>Total: ${(product.price + 10).toFixed(2)}</h2>
+          <h2>Total: ${totalUsd.toFixed(2)}</h2>
         </div>
       </div>
 
