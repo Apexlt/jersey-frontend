@@ -18,26 +18,17 @@ export default function PaymentMethod() {
   const [coin, setCoin] = useState("BTC");
   const [animKey, setAnimKey] = useState(0);
   const [proof, setProof] = useState(null);
-
-  // popupType: "success" | "expired" | null
   const [popupType, setPopupType] = useState(null);
 
-  // ⏳ 10-minute expiry logic
+  // ✅ optimized expiry (no interval spam)
   useEffect(() => {
     if (!lockedAt) return;
 
-    const check = () => {
-      const now = Date.now();
+    const timeout = setTimeout(() => {
+      setPopupType("expired");
+    }, 10 * 60 * 1000);
 
-      if (now - lockedAt > 10 * 60 * 1000) {
-        setPopupType("expired");
-      }
-    };
-
-    check();
-    const interval = setInterval(check, 1000);
-
-    return () => clearInterval(interval);
+    return () => clearTimeout(timeout);
   }, [lockedAt]);
 
   if (!product || !size || !customer) {
@@ -50,9 +41,9 @@ export default function PaymentMethod() {
   }
 
   const wallet = {
-    BTC: "bc1q7yj0k4x0l0u5s9z8m3d5u6v7w8x9y0z3a4",
-    ETH: "0xexampleethwallet123",
-    USDT: "TetherTRC20Wallet123",
+    BTC: "bc1qstrjwmjlfez9wfuy8zsgz7s4z8yz4k94rprkcj",
+    ETH: "0xD7304dfce7879CBb452d8b1cde757F280C2Eb557",
+    USDT: "TUkVJZ1ED4zx5vkbtY5evci85trKXPpw14",
   };
 
   const selectedWallet = wallet[coin];
@@ -73,7 +64,6 @@ export default function PaymentMethod() {
   return (
     <div className="paymentPage">
 
-      {/* STEPS */}
       <div className="steps">
         <span>1. HOME</span>
         <span>2. CHECKOUT</span>
@@ -82,7 +72,6 @@ export default function PaymentMethod() {
 
       <div className="paymentCard">
 
-        {/* LEFT */}
         <div className="paymentLeft">
           <h2>Choose Payment Method</h2>
           <p className="sub">Rates locked for 10 minutes</p>
@@ -104,7 +93,6 @@ export default function PaymentMethod() {
           </div>
         </div>
 
-        {/* RIGHT */}
         <div key={animKey} className="paymentRight">
 
           <h3>{coin} Payment</h3>
@@ -123,7 +111,6 @@ export default function PaymentMethod() {
             </button>
           </div>
 
-          {/* UPLOAD */}
           <div className="uploadBox">
             <label className="uploadBtn">
               📤 Upload Payment Screenshot
@@ -149,62 +136,36 @@ export default function PaymentMethod() {
         </div>
       </div>
 
-      {/* ================= POPUPS ================= */}
-
-      {/* SUCCESS POPUP */}
       {popupType === "success" && (
         <div className="popupOverlay">
           <div className="popupCard successState">
-
             <div className="stateIcon">✅</div>
-
             <h2 className="stateTitle">Payment Submitted</h2>
-
             <p className="stateText">
               Your payment proof has been received.<br />
               We are currently verifying your transaction.
             </p>
-
-            <div className="stateBadge successBadge">
-              IN REVIEW
-            </div>
-
-            <button
-              className="stateBtn successBtn"
-              onClick={() => navigate("/")}
-            >
+            <div className="stateBadge successBadge">IN REVIEW</div>
+            <button className="stateBtn successBtn" onClick={() => navigate("/")}>
               Back to Home
             </button>
-
           </div>
         </div>
       )}
 
-      {/* EXPIRED POPUP */}
       {popupType === "expired" && (
         <div className="popupOverlay">
           <div className="popupCard expiredState">
-
             <div className="stateIcon">⏳</div>
-
             <h2 className="stateTitle">Payment Expired</h2>
-
             <p className="stateText">
               Your 10-minute payment window has ended.<br />
               Please restart checkout to continue.
             </p>
-
-            <div className="stateBadge expiredBadge">
-              SESSION CLOSED
-            </div>
-
-            <button
-              className="stateBtn expiredBtn"
-              onClick={() => navigate("/")}
-            >
+            <div className="stateBadge expiredBadge">SESSION CLOSED</div>
+            <button className="stateBtn expiredBtn" onClick={() => navigate("/")}>
               Restart Checkout
             </button>
-
           </div>
         </div>
       )}
