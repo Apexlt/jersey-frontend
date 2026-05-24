@@ -1,29 +1,33 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 
 import { FaFacebook, FaInstagram, FaEnvelope } from "react-icons/fa";
 
 import logo from "../assets/logo.webp";
-import jersey1 from "../assets/ronaldo1.png";
-import jersey2 from "../assets/ronaldo2.jpg";
-import jersey3 from "../assets/ronaldo3.png";
-import jersey4 from "../assets/ronaldo4.png";
+import jersey1 from "../assets/ronaldo100.webp";
+import jersey2 from "../assets/ronaldo200.webp";
+import jersey3 from "../assets/ronaldo300.webp";
+import jersey4 from "../assets/ronaldo400.webp";
 
 export default function Home() {
   const navigate = useNavigate();
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedSizes, setSelectedSizes] = useState({});
+  const [popup, setPopup] = useState(false);
 
-  const jerseys = [
-    { id: 1, price: 149.99, image: jersey1 },
-    { id: 4, price: 149.99, image: jersey4 },
-    { id: 3, price: 149.99, image: jersey3 },
-    { id: 2, price: 149.99, image: jersey2 },
-  ];
+  const jerseys = useMemo(
+    () => [
+      { id: 1, price: 149.99, image: jersey1 },
+      { id: 4, price: 149.99, image: jersey4 },
+      { id: 3, price: 149.99, image: jersey3 },
+      { id: 2, price: 149.99, image: jersey2 },
+    ],
+    []
+  );
 
-  const sizes = ["S", "M", "L", "XL"];
+  const sizes = useMemo(() => ["S", "M", "L", "XL"], []);
   const current = jerseys[activeIndex];
 
   const next = () =>
@@ -41,8 +45,35 @@ export default function Home() {
     }));
   };
 
+  const handleBuy = () => {
+    const size = selectedSizes[current.id];
+
+    if (!size) {
+      setPopup(true);
+      return;
+    }
+
+    navigate("/checkout", {
+      state: {
+        product: current,
+        size,
+      },
+    });
+  };
+
   return (
     <div className="page">
+
+      {/* POPUP */}
+      {popup && (
+        <div className="popupOverlay" onClick={() => setPopup(false)}>
+          <div className="popupCard errorState">
+            <h2>⚠️ Select a size first</h2>
+            <p>You need to choose a jersey size before continuing.</p>
+            <button onClick={() => setPopup(false)}>OK</button>
+          </div>
+        </div>
+      )}
 
       {/* HEADER */}
       <div className="header">
@@ -74,6 +105,7 @@ export default function Home() {
           <div className="overlay">
             <p className="price">${current.price}</p>
 
+            {/* SIZE */}
             <div className="sizeContainer">
               {sizes.map((size) => (
                 <button
@@ -96,18 +128,8 @@ export default function Home() {
               ))}
             </div>
 
-            <button
-              className="button"
-              disabled={!selectedSizes[current.id]}
-              onClick={() =>
-                navigate("/checkout", {
-                  state: {
-                    product: current,
-                    size: selectedSizes[current.id],
-                  },
-                })
-              }
-            >
+            {/* BUY */}
+            <button className="button" onClick={handleBuy}>
               Buy Now
             </button>
           </div>
@@ -116,25 +138,15 @@ export default function Home() {
         <button className="navBtn" onClick={next}>▶</button>
       </section>
 
-      {/* 🔥 NEW FOOTER WITH ICONS */}
+      {/* FOOTER */}
       <footer className="footer">
-
         <p>Verified Signed Jerseys • Crypto Payments • Worldwide Delivery</p>
 
         <div className="socials">
-          <a href="https://facebook.com" target="_blank">
-            <FaFacebook />
-          </a>
-
-          <a href="https://instagram.com" target="_blank">
-            <FaInstagram />
-          </a>
-
-          <a href="mailto:your@email.com">
-            <FaEnvelope />
-          </a>
+          <a href="https://facebook.com"><FaFacebook /></a>
+          <a href="https://instagram.com"><FaInstagram /></a>
+          <a href="mailto:your@email.com"><FaEnvelope /></a>
         </div>
-
       </footer>
 
     </div>
