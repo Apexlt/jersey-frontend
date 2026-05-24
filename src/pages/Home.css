@@ -8,7 +8,7 @@ html, body, #root {
   margin: 0;
   padding: 0;
   width: 100%;
-  overflow-x: hidden; /* 🔥 removes scrollbar properly */
+  overflow-x: hidden;
 }
 
 /* PAGE */
@@ -22,7 +22,7 @@ html, body, #root {
   background: radial-gradient(circle at top, rgba(255, 215, 0, 0.18), #0b0b0f 45%);
 }
 
-/* 🔥 HEADER */
+/* HEADER */
 .header {
   position: sticky;
   top: 0;
@@ -33,18 +33,15 @@ html, body, #root {
   justify-content: space-between;
 
   padding: 15px 20px;
-
   background: #0b2a5b;
 }
 
-/* LEFT SIDE */
 .headerLeft {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-/* VERTICAL LINE */
 .divider {
   width: 3px;
   height: 40px;
@@ -52,14 +49,13 @@ html, body, #root {
   border-radius: 2px;
 }
 
-/* LOGO */
 .logo {
   width: 55px;
   height: 55px;
   object-fit: contain;
 }
 
-/* MENU ICON */
+/* MENU */
 .menu {
   display: flex;
   flex-direction: column;
@@ -95,22 +91,20 @@ html, body, #root {
   opacity: 0.75;
 }
 
-/* SLIDER (FIXED OVERFLOW) */
+/* SLIDER */
 .sliderWrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-
   gap: 8px;
   padding: 40px 10px;
-
   width: 100%;
-  overflow: hidden; /* 🔥 critical fix */
+  overflow: hidden;
 }
 
 /* NAV BUTTONS */
 .navBtn {
-  flex-shrink: 0; /* 🔥 prevents pushing layout */
+  flex-shrink: 0;
   padding: 10px 12px;
   font-size: 18px;
 
@@ -128,7 +122,7 @@ html, body, #root {
   transform: scale(1.05);
 }
 
-/* CARD (FIXED OVERFLOW SOURCE) */
+/* CARD */
 .card {
   position: relative;
   border-radius: 20px;
@@ -137,7 +131,7 @@ html, body, #root {
   width: 100%;
   max-width: 340px;
 
-  flex-shrink: 1; /* 🔥 prevents overflow */
+  flex-shrink: 1;
 
   border: 1px solid rgba(255,215,0,0.3);
   box-shadow: 0 15px 50px rgba(255, 215, 0, 0.12);
@@ -166,7 +160,7 @@ html, body, #root {
   font-weight: bold;
 }
 
-/* SIZES */
+/* SIZE */
 .sizeContainer {
   display: flex;
   flex-wrap: wrap;
@@ -181,7 +175,7 @@ html, body, #root {
   cursor: pointer;
 }
 
-/* BUTTON */
+/* BUY BUTTON */
 .button {
   margin-top: 12px;
   padding: 13px;
@@ -201,17 +195,16 @@ html, body, #root {
   padding: 35px;
   font-size: 12px;
   opacity: 0.6;
-
   width: 100%;
 }
 
-/* SOCIAL ICONS */
+/* SOCIALS */
 .socials {
   margin-top: 15px;
   display: flex;
   justify-content: center;
   gap: 18px;
-  flex-wrap: wrap; /* 🔥 prevents overflow */
+  flex-wrap: wrap;
 }
 
 .socials a {
@@ -225,7 +218,50 @@ html, body, #root {
   color: white;
 }
 
-/* 📱 TABLET */
+/* ================= POPUP ================= */
+
+.popupOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.popupCard {
+  background: #111;
+  border: 1px solid #FFD700;
+  padding: 25px;
+  border-radius: 15px;
+  text-align: center;
+  color: white;
+  width: 90%;
+  max-width: 350px;
+  animation: pop 0.2s ease;
+}
+
+.popupCard button {
+  margin-top: 15px;
+  padding: 10px 15px;
+  border: none;
+  background: #FFD700;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+@keyframes pop {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.errorState {
+  border: 1px solid #ffcc00;
+}
+
+/* 📱 RESPONSIVE */
 @media (max-width: 900px) {
   .sliderWrapper {
     flex-direction: row;
@@ -237,9 +273,7 @@ html, body, #root {
   }
 }
 
-/* 📱 SMALL PHONES */
 @media (max-width: 500px) {
-
   .hero {
     padding: 50px 15px;
   }
@@ -261,4 +295,3 @@ html, body, #root {
     font-size: 16px;
   }
 }
-
